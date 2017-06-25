@@ -10,6 +10,23 @@ public class IntRadixSorter extends RadixSorter {
     public IntRadixSorter() { super(); }
 
     /**
+     * Конструктор копии
+     * @param other
+     */
+    public IntRadixSorter(IntRadixSorter other) {
+        m_maxDigits = other.m_maxDigits;
+        m_currentDigit = other.m_currentDigit;
+
+        m_workingArray = new Vector<>(other.m_workingArray);
+        m_categoriesArray.clear();
+        for(int i = 0; i < 10; ++i) {
+            m_categoriesArray.add(
+                        new Vector<>(
+                            other.m_categoriesArray.elementAt(i)));
+        }
+    }
+
+    /**
      * Загружает массив для сортировки внутрь класса
      * @param array - массив, который нужно отсортировать
      */

@@ -9,6 +9,23 @@ public class StringRadixSorter extends RadixSorter {
     public StringRadixSorter() { super(); }
 
     /**
+     * Конструктор копии
+     * @param other
+     */
+    public StringRadixSorter(StringRadixSorter other) {
+        m_maxDigits = other.m_maxDigits;
+        m_currentDigit = other.m_currentDigit;
+
+        m_workingArray = new Vector<>(other.m_workingArray);
+        m_categoriesArray.clear();
+        for(int i = 0; i < 37; ++i) {
+            m_categoriesArray.add(
+                            new Vector<>(
+                                    other.m_categoriesArray.elementAt(i)));
+        }
+    }
+
+    /**
      * Загружает массив для сортировки внутрь класса
      * @param array - массив, который нужно отсортировать
      */
