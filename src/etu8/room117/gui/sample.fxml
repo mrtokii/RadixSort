@@ -85,14 +85,9 @@
                 </Button>
                 <HBox alignment="CENTER" prefHeight="40.0" prefWidth="200.0">
                     <children>
-                        <Label minWidth="250.0" prefWidth="250.0" text="Текущий разряд сортировки:">
+                        <Label fx:id="DigitLabel" minWidth="100.0" prefWidth="300.0">
                             <font>
                                 <Font size="18.0" />
-                            </font>
-                        </Label>
-                        <Label fx:id="DigitLabel" minWidth="50.0" prefWidth="50.0">
-                            <font>
-                                <Font size="36.0" />
                             </font>
                         </Label>
                     </children>
