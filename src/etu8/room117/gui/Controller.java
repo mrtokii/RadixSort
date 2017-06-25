@@ -21,6 +21,7 @@ import java.util.Random;
 public class Controller {
     private Vector<Canvas> vectorCanvas;
     private Vector<ScrollPane> vectorScrollPane;
+    private Vector<VBox> vectorVBox;
     private ScrollPane prevMark=null;
     private int canvasLength=3000;
     private  int CanvasWidth=168;
@@ -51,7 +52,7 @@ public class Controller {
 
     public void onNextStepButtonClicked(ActionEvent event) { // Если нажата клавиша "Следующий шаг"
         //updateWorkingArray(InitialArrayInt);
-        setCanvases(36);
+        //setCanvases(36);
 
 
     }
@@ -73,7 +74,7 @@ public class Controller {
             for (int i = 0; i <strArray.length ; ++i) {
                 InitialArrayInt.add(Integer.parseInt(strArray[i]));
             }
-            //setCanvases(10);
+            setCanvases(10);
             sortNumbers(InitialArrayInt);
             updateWorkingArrayInteger(InitialArrayInt);
             updateComponentsArrayInteger(InitialArrayInt,1,3);
@@ -86,7 +87,7 @@ public class Controller {
             for (int i = 0; i <strArray.length ; ++i) {
                 InitialArrayString.add(strArray[i]);
             }
-            //setCanvases(36);
+            setCanvases(36);
             sortStrings(InitialArrayString);
             updateWorkingArrayString(InitialArrayString);
             updateComponentsArrayString(InitialArrayString,33,3);
@@ -111,7 +112,7 @@ public class Controller {
     }
 
     public void onClearButtonClicked(ActionEvent event) { // Если нажата клавиша "Сброс"
-
+            MainHBox.getChildren().remove(0,vectorCanvas.size());
     }
     public void onFinishSortingButtonClicked(ActionEvent event){ // Если нажата клавиша "Завершить сортировку"
 
@@ -119,8 +120,13 @@ public class Controller {
 
     public void setCanvases(int numCanvases){ // Установить количество столбцов
 
+        if(vectorCanvas!=null)
+        {
+            MainHBox.getChildren().remove(0,vectorCanvas.size());
+        }
         vectorCanvas = new Vector<Canvas>();
         vectorScrollPane= new Vector<ScrollPane>();
+        vectorVBox = new Vector<VBox>();
         Character sym = 'A';
         for (int i = 0; i < numCanvases; ++i) {
             String name;
@@ -156,6 +162,7 @@ public class Controller {
             MainHBox.getChildren().add(vBox);
             vectorCanvas.add(canvas);
             vectorScrollPane.add(scrollPane);
+            vectorVBox.add(vBox);
             setCanvasArea();
         }
     }
