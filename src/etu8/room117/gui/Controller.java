@@ -173,6 +173,11 @@ public class Controller {
         if (mode == Mode.NUMBERS) {
 
             IntRadixSorter irs = getIntRadixSorter();
+
+            // Заносим состояние сортировщика в историю
+            memorize(irs);
+
+            irs = getIntRadixSorter();
             int col = irs.doStep();
 
             // Теперь обновляем
@@ -183,12 +188,14 @@ public class Controller {
             updateCurrentDigit(irs.getCurrentDigit());
             lightColumn(col);
 
-            // Заносим состояние сортировщика в историю
-            memorize(irs);
-
         } else if (mode == Mode.STRINGS) {
 
             StringRadixSorter srs = getStringRadixSorter();
+
+            // Заносим состояние сортировщика в историю
+            memorize(srs);
+            srs = getStringRadixSorter();
+
             srs.doStep();
 
             // Теперь обновляем
@@ -197,10 +204,6 @@ public class Controller {
                 updateComponentsArrayString(srs.getCategoryArray(i), i, srs.getCurrentDigit());
             }
             updateCurrentDigit(srs.getCurrentDigit());
-
-            // Заносим состояние сортировщика в историю
-            memorize(srs);
-
         }
     }
 
@@ -230,6 +233,8 @@ public class Controller {
             }
             updateCurrentDigit(srs.getCurrentDigit());
         }
+
+        lightColumn(-1);
 
     }
 
@@ -338,7 +343,11 @@ public class Controller {
         if (mode == Mode.NUMBERS) {
 
             IntRadixSorter irs = getIntRadixSorter();
-            while (irs.doStep() != -2) ;
+            while (irs.doStep() != -2) {
+
+                // Заносим состояние сортировщика в историю
+                memorize(irs);
+            }
             lightColumn(-1);
 
             // Теперь обновляем
@@ -349,7 +358,11 @@ public class Controller {
             updateCurrentDigit(0);
         } else if (mode == Mode.STRINGS) {
             StringRadixSorter srs = getStringRadixSorter();
-            while (srs.doStep() != -2) ;
+            while (srs.doStep() != -2)  {
+
+                // Заносим состояние сортировщика в историю
+                memorize(srs);
+            }
 
             // Теперь обновляем
             updateWorkingArrayString(srs.getWorkingArray());
