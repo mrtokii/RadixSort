@@ -31,7 +31,7 @@ public class Controller {
     int spaceFont = 4;
     int fontSize = 35;
     int kk=0;
-    private Canvas canvasArea;
+    //private Canvas canvasArea;
 
     /**
      * Список режимов сортировки
@@ -58,7 +58,12 @@ public class Controller {
     private ScrollPane scrollAreaArray;
     @FXML
     private ScrollPane scrollPaneLow;
-
+    @FXML
+    private TextField TextFieldTillStr;
+    @FXML
+    private TextField TextFieldNumStr;
+    @FXML
+    private  Canvas canvasArea;
     Vector<Integer> InitialArrayInt;
     Vector<String> InitialArrayString;
 
@@ -224,8 +229,8 @@ public class Controller {
                 updateComponentsArrayString(srs.getCategoryArray(i), i, srs.getCurrentDigit());
             }
             updateCurrentDigit(srs.getCurrentDigit());
-
         }
+
     }
 
     public void onEnterDataClicked(ActionEvent event) { // Если нажата клавиша "Ввести данные"
@@ -280,9 +285,10 @@ public class Controller {
                 System.out.println(InitialArrayString.get(i));
             }
 
-            setCanvases(36);
+            setCanvases(37);
             sortStrings(InitialArrayString);
         }
+
     }
 
     private static boolean isDigit(String s) throws NumberFormatException {
@@ -320,6 +326,9 @@ public class Controller {
 
     public void onClearButtonClicked(ActionEvent event) { // Если нажата клавиша "Сброс"
         MainHBox.getChildren().remove(0, vectorCanvas.size());
+        GraphicsContext gc = canvasArea.getGraphicsContext2D();
+        gc.clearRect(0, 0, 1880, 3000);
+        Text_Field.clear();
 
         clearSaves();
         updateCurrentDigit(0);
@@ -363,21 +372,32 @@ public class Controller {
         vectorVBox = new Vector<VBox>();
         Character sym = 'A';
         for (int i = 0; i < numCanvases; ++i) {
-            String name;
+            String name = new String();
             VBox vBox = new VBox();//Создали вертикальный слой
             Label label = new Label();
-            if (i < 10) {
+            if (i < 10 && numCanvases<11) {
                 Integer sign = i;
                 name = sign.toString();
-            } else {
-                name = sym.toString();
-                char ch = (char) sym;
-                int n = (int) ch;
-                ++n;
-                ch = (char) n;
-                sym = (Character) ch;
             }
-            label = new Label(name);//Создали название колонки
+            else {
+                if (i < 11 && numCanvases > 10) {
+                    if (i == 0) {
+                        name = "$";
+                    } else {
+                        Integer sign = i - 1;
+                        name = sign.toString();
+                    }
+                } else {
+                    name = sym.toString();
+                    char ch = (char) sym;
+                    int n = (int) ch;
+                    ++n;
+                    ch = (char) n;
+                    sym = (Character) ch;
+
+                }
+            }
+            label.setText(name);//Создали название колонки
             label.setFont(new Font(24));
             label.setPrefWidth(185);
             label.setAlignment(Pos.CENTER);
@@ -394,25 +414,71 @@ public class Controller {
             vectorCanvas.add(canvas);
             vectorScrollPane.add(scrollPane);
             vectorVBox.add(vBox);
-            setCanvasArea();
         }
     }
 
-    public void setCanvasArea() {
-        canvasArea = new Canvas(1880, 3000);
-        scrollAreaArray.setContent(canvasArea);
-    }
 
     public void onFillingButtonClicked(ActionEvent event) { // Если нажата клавиша "Заполнить"
         Text_Field.clear();
+        boolean was = false;
         final Random random = new Random();
         String strNum = TextFieldNum.getText();
         String strTill = TextFieldTill.getText();
-        int count = Integer.parseInt(strNum);
-        int edge = Integer.parseInt(strTill);
-        for (int i = 0; i < count; ++i) {
-            Integer num = random.nextInt(edge);
-            Text_Field.appendText(num.toString() + " ");
+        if(strNum.length()!=0) {
+            int count = Integer.parseInt(strNum);
+            int edge = Integer.parseInt(strTill);
+            for (int i = 0; i < count; ++i) {
+                Integer num = random.nextInt(edge);
+                if(i!=count-1)
+                {
+                    Text_Field.appendText(num.toString() + " ");
+                }
+                else
+                {
+                    Text_Field.appendText(num.toString());
+                }
+            }
+            was = true;
+        }
+        String strNumStr = TextFieldNumStr.getText();
+        String strTillStr = TextFieldTillStr.getText();
+        if(strNumStr.length()!=0) {
+            if(was) Text_Field.appendText(" ");
+            int count = Integer.parseInt(strNumStr);
+            int edge = Integer.parseInt(strTillStr);
+
+            for (int i = 0; i < count; ++i) {
+                String result= new String();
+                int numRepeat = random.nextInt(edge)+1;
+                for (int j = 0; j < numRepeat; j++) {
+                    String tempresult = new String();
+                    int choiceNumOrLettter =  random.nextInt(6);
+                    if(choiceNumOrLettter==1)
+                    {
+                        Integer num = random.nextInt(10);
+                        tempresult = num.toString();
+                    }else
+                    {
+                        int num;
+                        num = random.nextInt(26);
+                        char ch = 'A';
+                        int m = (int) ch;
+                        m = m+num;
+                        ch = (char) m;
+                        tempresult = String.valueOf(ch);
+                    }
+                    result = result+tempresult;
+                }
+
+                if(i!=count-1)
+                {
+                    Text_Field.appendText(result + " ");
+                }
+                else
+                {
+                    Text_Field.appendText(result);
+                }
+            }
         }
     }
 
@@ -440,9 +506,8 @@ public class Controller {
 
     public void updateWorkingArrayString(Vector<String> array) {
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        gc.clearRect(0, 0, 1900, 3000);
+        gc.clearRect(0, 0, 1880, 3000);
         gc.setFont(new Font("Consolas", fontSize));//Courier New
-        gc.setStroke(Color.GREEN);
         gc.setFill(Color.GREEN);
         gc.setTextAlign(TextAlignment.LEFT);
         int x = 5;
@@ -476,65 +541,42 @@ public class Controller {
      * @param column
      */
     public void updateComponentsArrayInteger(Vector<Integer> array, int column, int digit) {
-            GraphicsContext gc = vectorCanvas.get(column).getGraphicsContext2D();
-            setParamFont(gc,column);
-            gc.setTextAlign(TextAlignment.RIGHT);
-            double scrollMiss = 1.0;
-            int y = canvasLength - spaceFont;
-            int x = CanvasWidth - 5;
+            Vector<String> vectorStr = new Vector<String>();
             for (int i = 0; i < array.size(); i++) {
                 Integer num = array.get(i);
-                String str = num.toString();
-                x = CanvasWidth - 5;
-                for (int j = str.length() - 1; j >= 0; j--) {
-                    char ch = str.charAt(j);
-                    String s = Character.toString(ch);
-                    if (j == str.length() - digit) {
-                        gc.setStroke(Color.RED);
-                        gc.setFill(Color.RED);
-                        gc.fillText(s, x, y);
-                        x = x - 17; //Промежуток между символами
-                        gc.setStroke(Color.GREEN);
-                        gc.setFill(Color.GREEN);
-                    } else {
-                        gc.fillText(s, x, y);
-                        x = x - 17;
-                    }
-                }
-                y = y - fontSize - spaceFont;
-                if (i % 10 == 0 && i > 9) {
-                    scrollMiss = scrollMiss - 0.15;
-                }
-                vectorScrollPane.get(column).setVvalue(scrollMiss);
+                vectorStr.add(num.toString());
             }
+            updateComponentsArrayString(vectorStr,column,digit);
     }
 
     public void updateComponentsArrayString(Vector<String> array, int column, int digit) {
         GraphicsContext gc = vectorCanvas.get(column).getGraphicsContext2D();
-        setParamFont(gc, column);
-        gc.setTextAlign(TextAlignment.LEFT);
+        gc.clearRect(0, 0, CanvasWidth, canvasLength);
+        gc.setFont(new Font("Consolas", fontSize));//Courier New
+        gc.setFill(Color.GREEN);
+        gc.setTextAlign(TextAlignment.RIGHT);
         double scrollMiss = 1.0;
-        if (column > 9 && column < 20) scrollPaneLow.setHvalue(0.385);
-        if (column > 19 && column < 30) scrollPaneLow.setHvalue(0.775);
-        if (column > 29) scrollPaneLow.setHvalue(1.0);
+        if (column > 8 && column < 19) scrollPaneLow.setHvalue(0.373);
+        if (column > 18 && column < 29) scrollPaneLow.setHvalue(0.746);
+        if (column > 28) scrollPaneLow.setHvalue(1.0);
         int y = canvasLength - spaceFont - 5;
-        int x = 5;
+        int x = CanvasWidth - 5;;
         for (int i = 0; i < array.size(); i++) {
             String str = array.get(i);
-            x = 5;
-            for (int j = 0; j <= str.length() - 1; j++) {
+            x = CanvasWidth - 5;
+            for (int j = str.length() - 1; j >= 0; j--) {
                 char ch = str.charAt(j);
                 String s = Character.toString(ch);
-                if (j == digit - 1) {
+                if (j == str.length() - digit) {
                     gc.setStroke(Color.RED);
                     gc.setFill(Color.RED);
                     gc.fillText(s, x, y);
-                    x = x + 18; //Промежуток между символами
+                    x = x - 18; //Промежуток между символами
                     gc.setStroke(Color.GREEN);
                     gc.setFill(Color.GREEN);
                 } else {
                     gc.fillText(s, x, y);
-                    x = x + 18;
+                    x = x - 18;
                 }
             }
             y = y - fontSize - spaceFont;
@@ -545,14 +587,6 @@ public class Controller {
         }
     }
 
-    public void setParamFont(GraphicsContext gc, int column)
-    {
-        gc.clearRect(0, 0, CanvasWidth, canvasLength);
-        gc.setFont(new Font("Consolas", fontSize));//Courier New
-        gc.setStroke(Color.GREEN);
-        gc.setFill(Color.GREEN);
-
-    }
 
     public void lightColumn(int column) { //Подсветка столбца
         if(column < 0) {
