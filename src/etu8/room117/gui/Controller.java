@@ -237,15 +237,26 @@ public class Controller {
             System.out.println("    sorting strings");
 
             setMode(Mode.STRINGS);
-
+            int maxlength=0;
+            for (int i = 0; i < strArray.length ; i++) {
+                if(strArray[i].length()>maxlength) maxlength=strArray[i].length();
+            }
             InitialArrayString = new Vector<String>();
             for (int i = 0; i < strArray.length; ++i) {
+                int countLength = strArray[i].length();
+                while(maxlength!=countLength)
+                {
+                    strArray[i]=strArray[i]+'$';
+                    ++countLength;
+                }
                 InitialArrayString.add(strArray[i]);
             }
+            for (int i = 0; i <InitialArrayString.size() ; i++) {
+                System.out.println(InitialArrayString.get(i));
+            }
+
             setCanvases(36);
             sortStrings(InitialArrayString);
-            updateWorkingArrayString(InitialArrayString);
-            updateComponentsArrayString(InitialArrayString, 33, 3);
         }
     }
 
