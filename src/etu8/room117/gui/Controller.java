@@ -142,7 +142,7 @@ public class Controller {
     private boolean rewind() {
         if (mode == Mode.NUMBERS) {
 
-            if (intRadixSortHistory.isEmpty()) {
+            if (intRadixSortHistory.size() == 1) {
                 return false;
             } else {
                 intRadixSortHistory.removeElementAt(intRadixSortHistory.size() - 1);
@@ -151,7 +151,7 @@ public class Controller {
 
         } else if (mode == Mode.STRINGS) {
 
-            if (stringRadixSortHistory.isEmpty()) {
+            if (stringRadixSortHistory.size() == 1) {
                 return false;
             } else {
                 stringRadixSortHistory.removeElementAt(stringRadixSortHistory.size() - 1);
@@ -168,7 +168,7 @@ public class Controller {
         if (mode == Mode.NUMBERS) {
 
             IntRadixSorter irs = getIntRadixSorter();
-            irs.doStep();
+            int col = irs.doStep();
 
             // Теперь обновляем
             updateWorkingArrayInteger(irs.getWorkingArray());
@@ -176,6 +176,7 @@ public class Controller {
                 updateComponentsArrayInteger(irs.getCategoryArray(i), i, irs.getCurrentDigit());
             }
             updateCurrentDigit(irs.getCurrentDigit());
+            lightColumn(col);
 
             // Заносим состояние сортировщика в историю
             memorize(irs);
@@ -200,7 +201,31 @@ public class Controller {
 
     public void onPreviousStepButtonClicked(ActionEvent event) // Если нажата клавиша предыдущий шаг
     {
+        if (mode == Mode.NUMBERS) {
 
+            rewind();
+            IntRadixSorter irs = getIntRadixSorter();
+
+            // Теперь обновляем
+            updateWorkingArrayInteger(irs.getWorkingArray());
+            for (int i = 0; i < 10; ++i) {
+                updateComponentsArrayInteger(irs.getCategoryArray(i), i, irs.getCurrentDigit());
+            }
+            updateCurrentDigit(irs.getCurrentDigit());
+
+        } else if (mode == Mode.STRINGS) {
+
+            rewind();
+            StringRadixSorter srs = getStringRadixSorter();
+
+            // Теперь обновляем
+            updateWorkingArrayString(srs.getWorkingArray());
+            for (int i = 0; i < 37; ++i) {
+                updateComponentsArrayString(srs.getCategoryArray(i), i, srs.getCurrentDigit());
+            }
+            updateCurrentDigit(srs.getCurrentDigit());
+
+        }
     }
 
     public void onEnterDataClicked(ActionEvent event) { // Если нажата клавиша "Ввести данные"
@@ -273,6 +298,8 @@ public class Controller {
         IntRadixSorter irs = getIntRadixSorter();
         irs.load(arr);
 
+        memorize(irs);
+
         updateCurrentDigit(1);
         updateWorkingArrayInteger(arr);
 
@@ -282,6 +309,8 @@ public class Controller {
     public void sortStrings(Vector<String> arr) {
         StringRadixSorter srs = getStringRadixSorter();
         srs.load(arr);
+
+        memorize(srs);
 
         updateCurrentDigit(1);
         updateWorkingArrayString(arr);
@@ -294,7 +323,6 @@ public class Controller {
 
         clearSaves();
         updateCurrentDigit(0);
-        updateWorkingArrayInteger(new Vector<>());
     }
 
     public void onFinishSortingButtonClicked(ActionEvent event) { // Если нажата клавиша "Завершить сортировку"
@@ -302,6 +330,7 @@ public class Controller {
 
             IntRadixSorter irs = getIntRadixSorter();
             while (irs.doStep() != -2) ;
+            lightColumn(-1);
 
             // Теперь обновляем
             updateWorkingArrayInteger(irs.getWorkingArray());
@@ -325,7 +354,9 @@ public class Controller {
     public void setCanvases(int numCanvases) { // Установить количество столбцов
 
         if (vectorCanvas != null) {
-            MainHBox.getChildren().remove(0, vectorCanvas.size());
+            if(!MainHBox.getChildren().isEmpty()) {
+                MainHBox.getChildren().remove(0, vectorCanvas.size());
+            }
         }
         vectorCanvas = new Vector<Canvas>();
         vectorScrollPane = new Vector<ScrollPane>();
@@ -524,10 +555,31 @@ public class Controller {
     }
 
     public void lightColumn(int column) { //Подсветка столбца
-        if (prevMark != null) {
+        if(column < 0) {
+
+            if(prevMark != null) {
                 prevMark.setStyle("-fx-border-color: white");
+            }
+            prevMark = null;
+            return;
+
+        } else {
+
+            if(mode == Mode.STRINGS && column > 36)
+                return;
+
+            if(mode == Mode.NUMBERS && column > 9)
+                return;
+
+            if (prevMark != null) {
+                prevMark.setStyle("-fx-border-color: white");
+            }
+            vectorScrollPane.get(column).setStyle("-fx-border-color: red");
+            prevMark = vectorScrollPane.get(column);
         }
-        vectorScrollPane.get(column).setStyle("-fx-border-color: red");
-        prevMark = vectorScrollPane.get(column);
+
+
+
+
     }
 }
