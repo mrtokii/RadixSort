@@ -130,7 +130,7 @@
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
                <content>
-                  <Canvas fx:id="canvasArea" height="3000.0" width="1880.0" />
+                  <Canvas fx:id="canvasArea" height="10000.0" width="1880.0" />
                </content>
                 </ScrollPane>
                 <ScrollPane fx:id="scrollPaneLow" prefHeight="460.0" prefWidth="200.0">
@@ -142,18 +142,18 @@
                     </content></ScrollPane>
                 <HBox alignment="CENTER" minHeight="50.0" prefHeight="50.0">
                     <children>
-                        <Button fx:id="NextStepButton" minWidth="130.0" mnemonicParsing="false" onAction="#onNextStepButtonClicked" prefWidth="130.0" text="Следующий шаг">
-                            <font>
-                                <Font size="14.0" />
-                            </font></Button>
                   <Button minWidth="150.0" mnemonicParsing="false" onAction="#onPreviousStepButtonClicked" text="Предыдущий шаг">
                      <font>
                         <Font size="14.0" />
                      </font>
                      <HBox.margin>
-                        <Insets left="60.0" />
+                        <Insets right="60.0" />
                      </HBox.margin>
                   </Button>
+                        <Button fx:id="NextStepButton" minWidth="130.0" mnemonicParsing="false" onAction="#onNextStepButtonClicked" prefWidth="130.0" text="Следующий шаг">
+                            <font>
+                                <Font size="14.0" />
+                            </font></Button>
                         <Button fx:id="FinishSorting" minWidth="170.0" mnemonicParsing="false" onAction="#onFinishSortingButtonClicked" prefWidth="170.0" text="Завершить сортировку">
                             <font>
                                 <Font size="14.0" />

@@ -284,7 +284,7 @@ public class Controller {
                     strArray[i]=strArray[i]+'$';
                     ++countLength;
                 }
-                InitialArrayString.add(strArray[i]);
+                InitialArrayString.add(strArray[i].toLowerCase());
             }
             for (int i = 0; i <InitialArrayString.size() ; i++) {
                 System.out.println(InitialArrayString.get(i));
@@ -330,11 +330,16 @@ public class Controller {
     }
 
     public void onClearButtonClicked(ActionEvent event) { // Если нажата клавиша "Сброс"
-        MainHBox.getChildren().remove(0, vectorCanvas.size());
+        if(!MainHBox.getChildren().isEmpty()) {
+            MainHBox.getChildren().remove(0, vectorCanvas.size());
+        }
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        gc.clearRect(0, 0, 1880, 3000);
+        gc.clearRect(0, 0, 1880, 10000);
         Text_Field.clear();
-
+        TextFieldTill.clear();
+        TextFieldNum.clear();
+        TextFieldNumStr.clear();
+        TextFieldTillStr.clear();
         clearSaves();
         updateCurrentDigit(0);
     }
@@ -474,7 +479,7 @@ public class Controller {
                     {
                         int num;
                         num = random.nextInt(26);
-                        char ch = 'A';
+                        char ch = 'a';
                         int m = (int) ch;
                         m = m+num;
                         ch = (char) m;
@@ -519,7 +524,7 @@ public class Controller {
 
     public void updateWorkingArrayString(Vector<String> array) {
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        gc.clearRect(0, 0, 1880, 3000);
+        gc.clearRect(0, 0, 1880, 10000);
         gc.setFont(new Font("Consolas", fontSize));//Courier New
         gc.setFill(Color.GREEN);
         gc.setTextAlign(TextAlignment.LEFT);
