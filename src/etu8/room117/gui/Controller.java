@@ -526,7 +526,7 @@ public class Controller {
         int x = 5;
         int y = 30;
         for (int i = 0; i < array.size(); i++) {
-            String str = array.get(i);
+            String str = array.get(i).replaceAll("[$]", "");
             if (i == 0) {
                 gc.setFill(Color.ORANGE);
             } else {
@@ -576,6 +576,10 @@ public class Controller {
         int x = CanvasWidth - 5;;
         for (int i = 0; i < array.size(); i++) {
             String str = array.get(i);
+            if(column != 0) {
+                str = str.replaceAll("[$]", "");
+            }
+
             x = CanvasWidth - 5;
             for (int j = str.length() - 1; j >= 0; j--) {
                 char ch = str.charAt(j);
