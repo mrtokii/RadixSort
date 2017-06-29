@@ -154,35 +154,10 @@ public class StringRadixSorter extends RadixSorter {
             case '7': return 8;
             case '8': return 9;
             case '9': return 10;
-            case 'a': return 11;
-            case 'b': return 12;
-            case 'c': return 13;
-            case 'd': return 14;
-            case 'e': return 15;
-            case 'f': return 16;
-            case 'g': return 17;
-            case 'h': return 18;
-            case 'i': return 19;
-            case 'j': return 20;
-            case 'k': return 21;
-            case 'l': return 22;
-            case 'm': return 23;
-            case 'n': return 24;
-            case 'o': return 25;
-            case 'p': return 26;
-            case 'q': return 27;
-            case 'r': return 28;
-            case 's': return 29;
-            case 't': return 30;
-            case 'u': return 31;
-            case 'v': return 32;
-            case 'w': return 33;
-            case 'x': return 34;
-            case 'y': return 35;
-            case 'z': return 36;
+
         }
 
-        return 0;
+        return c-'a'+11;
     }
 
 
