@@ -162,7 +162,7 @@
                                 <Insets left="60.0" />
                             </HBox.margin>
                         </Button>
-                  <Button mnemonicParsing="false" text="Автоматически">
+                  <Button mnemonicParsing="false" onAction="#onAutoButtonClicked" text="Автоматически">
                      <font>
                         <Font size="14.0" />
                      </font>

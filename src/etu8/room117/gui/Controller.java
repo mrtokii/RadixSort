@@ -80,6 +80,27 @@ public class Controller {
         String str = Text_Field.getText();
         mainController.onEnterDataClicked(str);
     }
+
+    public void onAutoButtonClicked(ActionEvent event)
+    {
+        if(timerTask==null) {
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    onNextStepButtonClicked(event);
+                }
+            };
+            timer = new Timer();
+            timer.schedule(timerTask, 0, 1000);
+        }
+        else
+        {
+            timer.cancel();
+            timer=null;
+            timerTask=null;
+        }
+    }
+    
     private static boolean isDigit(String s) throws NumberFormatException { //Определяет, можно ли преобразовать строку в число
         try {
             Integer.parseInt(s);
