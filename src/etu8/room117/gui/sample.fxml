@@ -150,6 +150,14 @@
                         <Insets right="60.0" />
                      </HBox.margin>
                   </Button>
+                  <Button fx:id="AutoButton" minWidth="120.0" mnemonicParsing="false" onAction="#onAutoButtonClicked" prefWidth="120.0" text="Автоматически">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets right="60.0" />
+                     </HBox.margin>
+                  </Button>
                         <Button fx:id="NextStepButton" minWidth="130.0" mnemonicParsing="false" onAction="#onNextStepButtonClicked" prefWidth="130.0" text="Следующий шаг">
                             <font>
                                 <Font size="14.0" />
@@ -162,22 +170,6 @@
                                 <Insets left="60.0" />
                             </HBox.margin>
                         </Button>
-                  <Button mnemonicParsing="false" onAction="#onAutoButtonClicked" text="Автоматически">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="60.0" />
-                     </HBox.margin>
-                  </Button>
-                  <Button mnemonicParsing="false" text="Пауза">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets left="60.0" />
-                     </HBox.margin>
-                  </Button>
                         <Button fx:id="ClearButton" minWidth="100.0" mnemonicParsing="false" onAction="#onClearButtonClicked" text="Сброс">
                             <font>
                                 <Font size="14.0" />

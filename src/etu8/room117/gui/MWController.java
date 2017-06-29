@@ -150,7 +150,8 @@ public class MWController {
         return false;
     }
 
-    public void onNextStepButtonClicked(){
+    public int onNextStepButtonClicked(){
+        int col=-1;
         if (mode == Mode.NUMBERS) {
 
             IntRadixSorter irs = getIntRadixSorter();
@@ -159,7 +160,7 @@ public class MWController {
             memorize(irs);
 
             irs = getIntRadixSorter();
-            int col = irs.doStep();
+            col = irs.doStep();
 
             // Теперь обновляем
             control.updateWorkingArrayInteger(irs.getWorkingArray());
@@ -177,15 +178,16 @@ public class MWController {
             memorize(srs);
             srs = getStringRadixSorter();
 
-            srs.doStep();
-
+            col = srs.doStep();
             // Теперь обновляем
             control.updateWorkingArrayString(srs.getWorkingArray());
             for (int i = 0; i < 37; ++i) {
                 control.updateComponentsArrayString(srs.getCategoryArray(i), i, srs.getCurrentDigit());
             }
             control.updateCurrentDigit(srs.getCurrentDigit());
+            control.lightColumn(col);
         }
+        return col;
     }
 
     public void onPreviousStepButtonClicked() // Если нажата клавиша предыдущий шаг

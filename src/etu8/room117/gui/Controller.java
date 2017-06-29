@@ -2,6 +2,10 @@ package etu8.room117.gui;
 
 import etu8.room117.radix.*;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -21,6 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 import java.util.Random;
 
@@ -33,7 +38,7 @@ public class Controller {
     private int CanvasWidth = 168; //Размер холста в колонке
     int spaceFont = 4; //Отступ между строками при выводе данных
     int fontSize = 35; //Размер шрифта для рисования
-    boolean isClicked=false;
+    int isFinished;
 
     MWController mainController = new MWController();
 
@@ -57,18 +62,18 @@ public class Controller {
     @FXML
     private  Canvas canvasArea; // Холст, для рисования всего массива
     @FXML
-            private Button NextStepButton;
+    private Button AutoButton;
+
     Vector<Integer> InitialArrayInt; //Вектор чисел исходных данных
     Vector<String> InitialArrayString; //Вектор строк исходных данных
-    Timer timer=null;
-    TimerTask timerTask=null;
+    Timeline timeline=null;
 
     public Controller(){
         mainController.setControl(this);
     }
     
     public void onNextStepButtonClicked(ActionEvent event) { // Если нажата клавиша "Следующий шаг"
-        mainController.onNextStepButtonClicked();
+        isFinished=mainController.onNextStepButtonClicked();
     }
 
     public void onPreviousStepButtonClicked(ActionEvent event) // Если нажата клавиша "Предыдущий шаг"
@@ -81,37 +86,33 @@ public class Controller {
         mainController.onEnterDataClicked(str);
     }
 
-    public void onAutoButtonClicked(ActionEvent event)
-    {
-        if(timerTask==null) {
-            timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    onNextStepButtonClicked(event);
+    public void onAutoButtonClicked(ActionEvent event) { //Если нажата кнопка Автоматически/Пауза
+        if(timeline==null) {
+            timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
+                onNextStepButtonClicked(event);
+                if(isFinished==-2) {
+                    timeline.stop();
+                    timeline = null;
+                    changeButton(true);
+                    return;
                 }
-            };
-            timer = new Timer();
-            timer.schedule(timerTask, 0, 1000);
+            }));
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
+            changeButton(false);
         }
         else
         {
-            timer.cancel();
-            timer=null;
-            timerTask=null;
+            timeline.stop();
+            timeline=null;
+            changeButton(true);
         }
     }
-    
-    private static boolean isDigit(String s) throws NumberFormatException { //Определяет, можно ли преобразовать строку в число
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+    public void changeButton(boolean value) //true - установить "Play" false - установить "Pause"
+    {
+       if(value) AutoButton.setText("Автоматически");
+       if(!value) AutoButton.setText("Приостановить");
     }
-
-
-
 
     public void onClearButtonClicked(ActionEvent event) { // Если нажата клавиша "Сброс"
         if(!MainHBox.getChildren().isEmpty()) {
@@ -125,6 +126,7 @@ public class Controller {
         TextFieldNumStr.clear();
         TextFieldTillStr.clear();
         mainController.clearSaves();
+        timeline=null;
         updateCurrentDigit(0);
     }
 
@@ -328,16 +330,11 @@ public class Controller {
         gc.setFill(Color.GREEN);
         gc.setTextAlign(TextAlignment.RIGHT);
         double scrollMiss = 1.0;
-        if (column > 8 && column < 19) scrollPaneLow.setHvalue(0.373);
-        if (column > 18 && column < 29) scrollPaneLow.setHvalue(0.746);
-        if (column > 28) scrollPaneLow.setHvalue(1.0);
         int y = canvasLength - spaceFont - 5;
         int x = CanvasWidth - 5;;
         for (int i = 0; i < array.size(); i++) {
             String str = array.get(i);
-            if(column != 0) {
                 str = str.replaceAll("[$]", "_");
-            }
 
             x = CanvasWidth - 5;
             for (int j = str.length() - 1; j >= 0; j--) {
@@ -387,9 +384,9 @@ public class Controller {
             vectorScrollPane.get(column).setStyle("-fx-border-color: red");
             prevMark = vectorScrollPane.get(column);
         }
-
-
-
-
+        scrollPaneLow.setHvalue(0);
+        if (column > 8 && column < 19) scrollPaneLow.setHvalue(0.373);
+        if (column > 18 && column < 29) scrollPaneLow.setHvalue(0.746);
+        if (column > 28) scrollPaneLow.setHvalue(1.0);
     }
 }
