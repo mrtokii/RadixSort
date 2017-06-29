@@ -17,7 +17,7 @@
             <children>
                 <HBox minHeight="50.0" prefHeight="50.0" prefWidth="200.0">
                     <children>
-                        <Label minHeight="35.0" minWidth="130.0" prefWidth="130.0" text="Введите числа: ">
+                        <Label minHeight="35.0" minWidth="160.0" prefWidth="160.0" text="Введите символы: ">
                             <font>
                                 <Font size="18.0" />
                             </font></Label>

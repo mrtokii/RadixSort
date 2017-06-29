@@ -221,13 +221,14 @@ public class MWController {
 
     }
 
-    public void onEnterDataClicked(String str) { // Если нажата клавиша "Ввести данные"
+    public int onEnterDataClicked(String str) { // Если нажата клавиша "Ввести данные"
         boolean choice = true; // true - это строка чисел, false - строка
 
         System.out.println("OnEnterData:");
 
         String strArray[] = str.split(" ");
         for (int i = 0; i < strArray.length; i++) {
+            if(strArray[i].length()>8)   return 1;
             if (!isDigit(strArray[i])) //Вернет true, если строка может быть преобразована в число
             {
                 choice = false;
@@ -275,7 +276,7 @@ public class MWController {
             control.setCanvases(37);
             sortStrings(InitialArrayString);
         }
-
+    return 0;
     }
 
     private static boolean isDigit(String s) throws NumberFormatException {

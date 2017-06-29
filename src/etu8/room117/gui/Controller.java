@@ -26,6 +26,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.*;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.application.Platform;
 
 import java.util.Random;
 
@@ -82,8 +85,27 @@ public class Controller {
     }
 
     public void onEnterDataClicked(ActionEvent event) { // Если нажата клавиша "Ввести данные"
+        int mark=0;
         String str = Text_Field.getText();
-        mainController.onEnterDataClicked(str);
+        mark=mainController.onEnterDataClicked(str);
+        if(mark==1)
+        {
+            Controller.infoBox(" Одна из введенных строк превышает максимально допустимую длину - 8 символов", " Превышена длина!");
+        }
+    }
+
+    public static void infoBox(String infoMessage, String titleBar)
+    {
+        infoBox(infoMessage, titleBar, null);
+    }
+
+    public static void infoBox(String infoMessage, String titleBar, String headerMessage)
+    {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle(titleBar);
+        alert.setHeaderText(headerMessage);
+        alert.setContentText(infoMessage);
+        alert.showAndWait();
     }
 
     public void onAutoButtonClicked(ActionEvent event) { //Если нажата кнопка Автоматически/Пауза
@@ -127,7 +149,7 @@ public class Controller {
         TextFieldTillStr.clear();
         mainController.clearSaves();
         timeline=null;
-        updateCurrentDigit(0);
+        updateCurrentDigit(-10);
     }
 
     public void onFinishSortingButtonClicked(ActionEvent event) { // Если нажата клавиша "Завершить сортировку"
@@ -257,6 +279,11 @@ public class Controller {
     }
 
     public void updateCurrentDigit(int digit) { //Выводит строку с текущим разрядом сортировки
+        if(digit ==-10)
+        {
+            DigitLabel.setText("");
+            return;
+        }
         if (digit != 0) {
             Integer dig = new Integer(digit);
             DigitLabel.setText(" Текущий разряд сортировки: " + dig.toString());
