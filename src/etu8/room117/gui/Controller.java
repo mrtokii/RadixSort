@@ -280,7 +280,7 @@ public class Controller {
 
     public void updateWorkingArrayString(Vector<String> array) {// Выводит на экран содержание всего массива строк, подлежащих сортировке
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
-        gc.clearRect(0, 0, 1880, 10000);
+        gc.clearRect(0, 0, 1880, 3000);
         gc.setFont(new Font("Consolas", fontSize));//Courier New
         gc.setFill(Color.GREEN);
         gc.setTextAlign(TextAlignment.LEFT);

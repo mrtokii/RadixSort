@@ -130,7 +130,7 @@
                   <Insets left="10.0" right="10.0" />
                </VBox.margin>
                <content>
-                  <Canvas fx:id="canvasArea" height="10000.0" width="1880.0" />
+                  <Canvas fx:id="canvasArea" height="3000.0" width="1880.0" />
                </content>
                 </ScrollPane>
                 <ScrollPane fx:id="scrollPaneLow" prefHeight="460.0" prefWidth="200.0">
