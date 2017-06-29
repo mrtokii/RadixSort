@@ -57,16 +57,122 @@ public class Controller {
     @FXML
     private  Canvas canvasArea; // Холст, для рисования всего массива
     @FXML
+<<<<<<< HEAD
             private Button NextStepButton;
     Vector<Integer> InitialArrayInt; //Вектор чисел исходных данных
     Vector<String> InitialArrayString; //Вектор строк исходных данных
+
+    Vector<IntRadixSorter> intRadixSortHistory;
+    Vector<StringRadixSorter> stringRadixSortHistory;
     Timer timer=null;
     TimerTask timerTask=null;
+
+    /**
+     * Устанавливает режим сортировки - числа или строки
+     *
+     * @param m - название режима
+     */
+    private void setMode(Mode m) {
+        System.out.println("Setting mode to " + m.toString());
+
+        clearSaves();
+        mode = m;
+    }
+
+    /**
+     * Запоминает промежуточные состояния сортировки
+     *
+     * @param sorter - сортировщик целых чисел
+     */
+    private void memorize(IntRadixSorter sorter) {
+        IntRadixSorter irs = new IntRadixSorter(sorter);
+        intRadixSortHistory.add(irs);
+    }
+
+    /**
+     * Запоминает промедуточные состояния сортировки
+     *
+     * @param sorter - сортировщик строк
+     */
+    private void memorize(StringRadixSorter sorter) {
+        StringRadixSorter srs = new StringRadixSorter(sorter);
+        stringRadixSortHistory.add(srs);
+    }
+
+    /**
+     * Очищает все сохраненные состояния сортировщиков
+     */
+    private void clearSaves() {
+        System.out.println("Clearing saves!");
+
+        intRadixSortHistory = new Vector<>();
+        stringRadixSortHistory = new Vector<>();
+
+    }
+
+    /**
+     * Отдает последний использовавшийся сортировщик целых чисел
+     *
+     * @return
+     */
+    private IntRadixSorter getIntRadixSorter() {
+        if (intRadixSortHistory.isEmpty()) {
+            intRadixSortHistory.add(new IntRadixSorter());
+        }
+=======
+    private  Canvas canvasArea;
+>>>>>>> eba9bc1812231fd7b9ae42f116eeb1bba4f9e0a1
 
     public Controller(){
         mainController.setControl(this);
     }
+
+<<<<<<< HEAD
+    /**
+     * Отдает последний использовавшийся сортировщик строк
+     *
+     * @return
+     */
+    private StringRadixSorter getStringRadixSorter() {
+        if (stringRadixSortHistory.isEmpty()) {
+            stringRadixSortHistory.add(new StringRadixSorter());
+        }
+
+        return stringRadixSortHistory.lastElement();
+    }
+
+    /**
+     * Отматывает состояние сортировщика назад на одну операцию
+     *
+     * @return
+     */
+    private boolean rewind() {
+        if (mode == Mode.NUMBERS) {
+
+            if (intRadixSortHistory.size() == 1) {
+                return false;
+            } else {
+                intRadixSortHistory.removeElementAt(intRadixSortHistory.size() - 1);
+                return true;
+            }
+
+        } else if (mode == Mode.STRINGS) {
+
+            if (stringRadixSortHistory.size() == 1) {
+                return false;
+            } else {
+                stringRadixSortHistory.removeElementAt(stringRadixSortHistory.size() - 1);
+                return true;
+            }
+
+        }
+
+        return false;
+    }
     
+
+=======
+>>>>>>> eba9bc1812231fd7b9ae42f116eeb1bba4f9e0a1
     public void onNextStepButtonClicked(ActionEvent event) { // Если нажата клавиша "Следующий шаг"
         mainController.onNextStepButtonClicked();
     }
@@ -80,6 +186,8 @@ public class Controller {
         String str = Text_Field.getText();
         mainController.onEnterDataClicked(str);
     }
+
+<<<<<<< HEAD
     private static boolean isDigit(String s) throws NumberFormatException { //Определяет, можно ли преобразовать строку в число
         try {
             Integer.parseInt(s);
@@ -89,6 +197,19 @@ public class Controller {
         }
     }
 
+    public void sortNumbers(Vector<Integer> arr) {
+        IntRadixSorter irs = getIntRadixSorter();
+        irs.load(arr);
+
+        memorize(irs);
+
+        updateCurrentDigit(1);
+        updateWorkingArrayInteger(arr);
+
+        System.out.println("sorting numbers " + arr.toString());
+    }
+=======
+>>>>>>> eba9bc1812231fd7b9ae42f116eeb1bba4f9e0a1
 
 
 
