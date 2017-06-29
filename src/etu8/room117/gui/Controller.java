@@ -35,16 +35,8 @@ public class Controller {
     int fontSize = 35; //Размер шрифта для рисования
     boolean isClicked=false;
 
-    /**
-     * Список режимов сортировки
-     */
-    enum Mode {
-        STRINGS, NUMBERS
-    }
+    MWController mainController = new MWController();
 
-    ;
-
-    private Mode mode;
 
     @FXML
     private TextField TextFieldTill; // Строка ввода данных максимального числа для генерации
@@ -68,270 +60,30 @@ public class Controller {
             private Button NextStepButton;
     Vector<Integer> InitialArrayInt; //Вектор чисел исходных данных
     Vector<String> InitialArrayString; //Вектор строк исходных данных
-
-    Vector<IntRadixSorter> intRadixSortHistory;
-    Vector<StringRadixSorter> stringRadixSortHistory;
     Timer timer=null;
     TimerTask timerTask=null;
 
-    /**
-     * Устанавливает режим сортировки - числа или строки
-     *
-     * @param m - название режима
-     */
-    private void setMode(Mode m) {
-        System.out.println("Setting mode to " + m.toString());
-
-        clearSaves();
-        mode = m;
-    }
-
-    /**
-     * Запоминает промежуточные состояния сортировки
-     *
-     * @param sorter - сортировщик целых чисел
-     */
-    private void memorize(IntRadixSorter sorter) {
-        IntRadixSorter irs = new IntRadixSorter(sorter);
-        intRadixSortHistory.add(irs);
-    }
-
-    /**
-     * Запоминает промедуточные состояния сортировки
-     *
-     * @param sorter - сортировщик строк
-     */
-    private void memorize(StringRadixSorter sorter) {
-        StringRadixSorter srs = new StringRadixSorter(sorter);
-        stringRadixSortHistory.add(srs);
-    }
-
-    /**
-     * Очищает все сохраненные состояния сортировщиков
-     */
-    private void clearSaves() {
-        System.out.println("Clearing saves!");
-
-        intRadixSortHistory = new Vector<>();
-        stringRadixSortHistory = new Vector<>();
-
-    }
-
-    /**
-     * Отдает последний использовавшийся сортировщик целых чисел
-     *
-     * @return
-     */
-    private IntRadixSorter getIntRadixSorter() {
-        if (intRadixSortHistory.isEmpty()) {
-            intRadixSortHistory.add(new IntRadixSorter());
-        }
-
-        return intRadixSortHistory.lastElement();
-    }
-
-    /**
-     * Отдает последний использовавшийся сортировщик строк
-     *
-     * @return
-     */
-    private StringRadixSorter getStringRadixSorter() {
-        if (stringRadixSortHistory.isEmpty()) {
-            stringRadixSortHistory.add(new StringRadixSorter());
-        }
-
-        return stringRadixSortHistory.lastElement();
-    }
-
-    /**
-     * Отматывает состояние сортировщика назад на одну операцию
-     *
-     * @return
-     */
-    private boolean rewind() {
-        if (mode == Mode.NUMBERS) {
-
-            if (intRadixSortHistory.size() == 1) {
-                return false;
-            } else {
-                intRadixSortHistory.removeElementAt(intRadixSortHistory.size() - 1);
-                return true;
-            }
-
-        } else if (mode == Mode.STRINGS) {
-
-            if (stringRadixSortHistory.size() == 1) {
-                return false;
-            } else {
-                stringRadixSortHistory.removeElementAt(stringRadixSortHistory.size() - 1);
-                return true;
-            }
-
-        }
-
-        return false;
+    public Controller(){
+        mainController.setControl(this);
     }
     
-
     public void onNextStepButtonClicked(ActionEvent event) { // Если нажата клавиша "Следующий шаг"
-        if (mode == Mode.NUMBERS) {
-
-            IntRadixSorter irs = getIntRadixSorter();
-
-            // Заносим состояние сортировщика в историю
-            memorize(irs);
-
-            irs = getIntRadixSorter();
-            int col = irs.doStep();
-
-            // Теперь обновляем
-            updateWorkingArrayInteger(irs.getWorkingArray());
-            for (int i = 0; i < 10; ++i) {
-                updateComponentsArrayInteger(irs.getCategoryArray(i), i, irs.getCurrentDigit());
-            }
-            updateCurrentDigit(irs.getCurrentDigit());
-            lightColumn(col);
-
-        } else if (mode == Mode.STRINGS) {
-
-            StringRadixSorter srs = getStringRadixSorter();
-
-            // Заносим состояние сортировщика в историю
-            memorize(srs);
-            srs = getStringRadixSorter();
-
-            srs.doStep();
-
-            // Теперь обновляем
-            updateWorkingArrayString(srs.getWorkingArray());
-            for (int i = 0; i < 37; ++i) {
-                updateComponentsArrayString(srs.getCategoryArray(i), i, srs.getCurrentDigit());
-            }
-            updateCurrentDigit(srs.getCurrentDigit());
-        }
+        mainController.onNextStepButtonClicked();
     }
 
     public void onPreviousStepButtonClicked(ActionEvent event) // Если нажата клавиша "Предыдущий шаг"
     {
-        if (mode == Mode.NUMBERS) {
-
-            rewind();
-            IntRadixSorter irs = getIntRadixSorter();
-
-            // Теперь обновляем
-            updateWorkingArrayInteger(irs.getWorkingArray());
-            for (int i = 0; i < 10; ++i) {
-                updateComponentsArrayInteger(irs.getCategoryArray(i), i, irs.getCurrentDigit());
-            }
-            updateCurrentDigit(irs.getCurrentDigit());
-
-        } else if (mode == Mode.STRINGS) {
-
-            rewind();
-            StringRadixSorter srs = getStringRadixSorter();
-
-            // Теперь обновляем
-            updateWorkingArrayString(srs.getWorkingArray());
-            for (int i = 0; i < 37; ++i) {
-                updateComponentsArrayString(srs.getCategoryArray(i), i, srs.getCurrentDigit());
-            }
-            updateCurrentDigit(srs.getCurrentDigit());
-        }
-
-        lightColumn(-1);
-
+        mainController.onPreviousStepButtonClicked();
     }
 
     public void onEnterDataClicked(ActionEvent event) { // Если нажата клавиша "Ввести данные"
-        boolean choice = true; // true - это строка чисел, false - строка
-
-        System.out.println("OnEnterData:");
-
         String str = Text_Field.getText();
-        String strArray[] = str.split(" ");
-        for (int i = 0; i < strArray.length; i++) {
-            if (!isDigit(strArray[i])) //Вернет true, если строка может быть преобразована в число
-            {
-                choice = false;
-            }
-        }
-
-        // Сортируем числа
-        if (choice) {
-            System.out.println("    sorting numbers");
-
-            setMode(Mode.NUMBERS);
-
-            InitialArrayInt = new Vector<Integer>();
-            for (int i = 0; i < strArray.length; ++i) {
-                InitialArrayInt.add(Integer.parseInt(strArray[i]));
-            }
-            setCanvases(10);
-            sortNumbers(InitialArrayInt);
-
-        }
-
-        // Сортируем строки
-        else {
-            System.out.println("    sorting strings");
-
-            setMode(Mode.STRINGS);
-            int maxlength=0;
-            for (int i = 0; i < strArray.length ; i++) {
-                if(strArray[i].length()>maxlength) maxlength=strArray[i].length();
-            }
-            InitialArrayString = new Vector<String>();
-            for (int i = 0; i < strArray.length; ++i) {
-                int countLength = strArray[i].length();
-                while(maxlength!=countLength)
-                {
-                    strArray[i]=strArray[i]+'$';
-                    ++countLength;
-                }
-                InitialArrayString.add(strArray[i].toLowerCase());
-            }
-            for (int i = 0; i <InitialArrayString.size() ; i++) {
-                System.out.println(InitialArrayString.get(i));
-            }
-
-            setCanvases(37);
-            sortStrings(InitialArrayString);
-        }
-
-    }
-
+        mainController.onEnterDataClicked(str);
     private static boolean isDigit(String s) throws NumberFormatException { //Определяет, можно ли преобразовать строку в число
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
 
-    public void sortNumbers(Vector<Integer> arr) {
-        IntRadixSorter irs = getIntRadixSorter();
-        irs.load(arr);
 
-        memorize(irs);
 
-        updateCurrentDigit(1);
-        updateWorkingArrayInteger(arr);
-
-        System.out.println("sorting numbers " + arr.toString());
-    }
-
-    public void sortStrings(Vector<String> arr) {
-        StringRadixSorter srs = getStringRadixSorter();
-        srs.load(arr);
-
-        memorize(srs);
-
-        updateCurrentDigit(1);
-        updateWorkingArrayString(arr);
-
-        System.out.println("sorting strings " + arr.toString());
-    }
 
     public void onClearButtonClicked(ActionEvent event) { // Если нажата клавиша "Сброс"
         if(!MainHBox.getChildren().isEmpty()) {
@@ -344,42 +96,12 @@ public class Controller {
         TextFieldNum.clear();
         TextFieldNumStr.clear();
         TextFieldTillStr.clear();
-        clearSaves();
+        mainController.clearSaves();
         updateCurrentDigit(0);
     }
 
     public void onFinishSortingButtonClicked(ActionEvent event) { // Если нажата клавиша "Завершить сортировку"
-        if (mode == Mode.NUMBERS) {
-
-            IntRadixSorter irs = getIntRadixSorter();
-            while (irs.doStep() != -2) {
-
-                // Заносим состояние сортировщика в историю
-                memorize(irs);
-            }
-            lightColumn(-1);
-
-            // Теперь обновляем
-            updateWorkingArrayInteger(irs.getWorkingArray());
-            for (int i = 0; i < 10; ++i) {
-                updateComponentsArrayInteger(irs.getCategoryArray(i), i, irs.getCurrentDigit());
-            }
-            updateCurrentDigit(0);
-        } else if (mode == Mode.STRINGS) {
-            StringRadixSorter srs = getStringRadixSorter();
-            while (srs.doStep() != -2)  {
-
-                // Заносим состояние сортировщика в историю
-                memorize(srs);
-            }
-
-            // Теперь обновляем
-            updateWorkingArrayString(srs.getWorkingArray());
-            for (int i = 0; i < 37; ++i) {
-                updateComponentsArrayString(srs.getCategoryArray(i), i, srs.getCurrentDigit());
-            }
-            updateCurrentDigit(0);
-        }
+        mainController.onFinishSortingButtonClicked();
     }
 
     public void setCanvases(int numCanvases) { // Установливает количество столбцов с холстами для вывода по разрядам (37 столбцов для строк, 10 столбцов для чисел)
@@ -625,10 +347,10 @@ public class Controller {
 
         } else {
 
-            if(mode == Mode.STRINGS && column > 36)
+            if(mainController.mode == MWController.Mode.STRINGS && column > 36)
                 return;
 
-            if(mode == Mode.NUMBERS && column > 9)
+            if(mainController.mode == MWController.Mode.NUMBERS && column > 9)
                 return;
 
             if (prevMark != null) {
