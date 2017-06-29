@@ -7,11 +7,15 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -21,17 +25,15 @@ import javafx.scene.text.Font;
 import java.util.Random;
 
 public class Controller {
-    private Vector<Canvas> vectorCanvas;
-    private Vector<ScrollPane> vectorScrollPane;
-    private Vector<VBox> vectorVBox;
-    private ScrollPane prevMark = null;
-    private Canvas prevCanvas = null;
-    private int canvasLength = 3000;
-    private int CanvasWidth = 168;
-    int spaceFont = 4;
-    int fontSize = 35;
-    int kk=0;
-    //private Canvas canvasArea;
+    private Vector<Canvas> vectorCanvas; //Вектор, хранящий холсты для рисования колонок
+    private Vector<ScrollPane> vectorScrollPane;// Вектор, хранящий панели скролинга для колонок
+    private Vector<VBox> vectorVBox; // Вектор, хранящий вертикальные слои для колонок
+    private ScrollPane prevMark = null; //Хранит панель скролинга, в которую записывались данные на предыдущем шаге (нужно для того, чтобы убирать подсветку с предыдущего столбца)
+    private int canvasLength = 3000; //Размер холста в колонке
+    private int CanvasWidth = 168; //Размер холста в колонке
+    int spaceFont = 4; //Отступ между строками при выводе данных
+    int fontSize = 35; //Размер шрифта для рисования
+    boolean isClicked=false;
 
     /**
      * Список режимов сортировки
@@ -45,30 +47,32 @@ public class Controller {
     private Mode mode;
 
     @FXML
-    private TextField TextFieldTill;
+    private TextField TextFieldTill; // Строка ввода данных максимального числа для генерации
     @FXML
-    private TextField TextFieldNum;
+    private TextField TextFieldNum; // Строка ввода данных количества чисел числа для генерации
     @FXML
-    private Label DigitLabel;
+    private Label DigitLabel; // Строка вывода текущего разряда
     @FXML
-    private TextField Text_Field;
+    private TextField Text_Field; // Строка ввода данных
     @FXML
-    private HBox MainHBox;
+    private HBox MainHBox; // Переменная, хранящая слой
     @FXML
-    private ScrollPane scrollAreaArray;
+    private ScrollPane scrollPaneLow; //Переменная, хранящая панель скроллинга, в которой располагаются все столбцы
     @FXML
-    private ScrollPane scrollPaneLow;
+    private TextField TextFieldTillStr; //Строка ввода данных максимального количества символов в строке для генерации
     @FXML
-    private TextField TextFieldTillStr;
+    private TextField TextFieldNumStr; //Строка ввода данных количества строк для генерации
     @FXML
-    private TextField TextFieldNumStr;
+    private  Canvas canvasArea; // Холст, для рисования всего массива
     @FXML
-    private  Canvas canvasArea;
-    Vector<Integer> InitialArrayInt;
-    Vector<String> InitialArrayString;
+            private Button NextStepButton;
+    Vector<Integer> InitialArrayInt; //Вектор чисел исходных данных
+    Vector<String> InitialArrayString; //Вектор строк исходных данных
 
     Vector<IntRadixSorter> intRadixSortHistory;
     Vector<StringRadixSorter> stringRadixSortHistory;
+    Timer timer=null;
+    TimerTask timerTask=null;
 
     /**
      * Устанавливает режим сортировки - числа или строки
@@ -167,7 +171,7 @@ public class Controller {
 
         return false;
     }
-
+    
 
     public void onNextStepButtonClicked(ActionEvent event) { // Если нажата клавиша "Следующий шаг"
         if (mode == Mode.NUMBERS) {
@@ -207,7 +211,7 @@ public class Controller {
         }
     }
 
-    public void onPreviousStepButtonClicked(ActionEvent event) // Если нажата клавиша предыдущий шаг
+    public void onPreviousStepButtonClicked(ActionEvent event) // Если нажата клавиша "Предыдущий шаг"
     {
         if (mode == Mode.NUMBERS) {
 
@@ -296,7 +300,7 @@ public class Controller {
 
     }
 
-    private static boolean isDigit(String s) throws NumberFormatException {
+    private static boolean isDigit(String s) throws NumberFormatException { //Определяет, можно ли преобразовать строку в число
         try {
             Integer.parseInt(s);
             return true;
@@ -378,7 +382,7 @@ public class Controller {
         }
     }
 
-    public void setCanvases(int numCanvases) { // Установить количество столбцов
+    public void setCanvases(int numCanvases) { // Установливает количество столбцов с холстами для вывода по разрядам (37 столбцов для строк, 10 столбцов для чисел)
 
         if (vectorCanvas != null) {
             if(!MainHBox.getChildren().isEmpty()) {
@@ -500,7 +504,7 @@ public class Controller {
         }
     }
 
-    public void updateCurrentDigit(int digit) {
+    public void updateCurrentDigit(int digit) { //Выводит строку с текущим разрядом сортировки
         if (digit != 0) {
             Integer dig = new Integer(digit);
             DigitLabel.setText(" Текущий разряд сортировки: " + dig.toString());
@@ -513,7 +517,7 @@ public class Controller {
         System.exit(0);
     }
 
-    public void updateWorkingArrayInteger(Vector<Integer> array) { // Заполняет Text_Area данными из вектора
+    public void updateWorkingArrayInteger(Vector<Integer> array) { // Выводит на экран содержание всего массива чисел, подлежащих сортировке
         Vector<String> strings = new Vector<String>();
         for (int i = 0; i < array.size(); i++) {
             Integer num = array.get(i);
@@ -522,7 +526,7 @@ public class Controller {
         updateWorkingArrayString(strings);
     }
 
-    public void updateWorkingArrayString(Vector<String> array) {
+    public void updateWorkingArrayString(Vector<String> array) {// Выводит на экран содержание всего массива строк, подлежащих сортировке
         GraphicsContext gc = canvasArea.getGraphicsContext2D();
         gc.clearRect(0, 0, 1880, 10000);
         gc.setFont(new Font("Consolas", fontSize));//Courier New
@@ -558,7 +562,7 @@ public class Controller {
      * @param array
      * @param column
      */
-    public void updateComponentsArrayInteger(Vector<Integer> array, int column, int digit) {
+    public void updateComponentsArrayInteger(Vector<Integer> array, int column, int digit) { //Выводит в столбец column числа и подсвечивает разряд digit
             Vector<String> vectorStr = new Vector<String>();
             for (int i = 0; i < array.size(); i++) {
                 Integer num = array.get(i);
@@ -567,7 +571,7 @@ public class Controller {
             updateComponentsArrayString(vectorStr,column,digit);
     }
 
-    public void updateComponentsArrayString(Vector<String> array, int column, int digit) {
+    public void updateComponentsArrayString(Vector<String> array, int column, int digit) {//Выводит в столбец column строки и подсвечивает разряд digit
         GraphicsContext gc = vectorCanvas.get(column).getGraphicsContext2D();
         gc.clearRect(0, 0, CanvasWidth, canvasLength);
         gc.setFont(new Font("Consolas", fontSize));//Courier New
@@ -582,7 +586,7 @@ public class Controller {
         for (int i = 0; i < array.size(); i++) {
             String str = array.get(i);
             if(column != 0) {
-                str = str.replaceAll("[$]", "");
+                str = str.replaceAll("[$]", "_");
             }
 
             x = CanvasWidth - 5;
@@ -610,7 +614,7 @@ public class Controller {
     }
 
 
-    public void lightColumn(int column) { //Подсветка столбца
+    public void lightColumn(int column) { //Подсветка столбца column
         if(column < 0) {
 
             if(prevMark != null) {

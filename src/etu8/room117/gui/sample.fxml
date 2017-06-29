@@ -162,6 +162,22 @@
                                 <Insets left="60.0" />
                             </HBox.margin>
                         </Button>
+                  <Button mnemonicParsing="false" onAction="#onAutoButtonClicked" text="Автоматически">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="60.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" text="Пауза">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="60.0" />
+                     </HBox.margin>
+                  </Button>
                         <Button fx:id="ClearButton" minWidth="100.0" mnemonicParsing="false" onAction="#onClearButtonClicked" text="Сброс">
                             <font>
                                 <Font size="14.0" />
